@@ -1,0 +1,220 @@
+{
+  "info": {
+    "cell": {
+      "address": 1311,
+      "type": "|u1"
+    },
+    "coins": {
+      "address": 1886,
+      "type": "|u1"
+    },
+    "ducking?": {
+      "address": 1812,
+      "type": "|u1"
+    },
+    "enemy0?": {
+      "address": 15,
+      "type": ">u1"
+    },
+    "enemy0_level_x": {
+      "address": 110,
+      "type": ">u1"
+    },
+    "enemy0_screen_x": {
+      "address": 135,
+      "type": ">u1"
+    },
+    "enemy0_screen_y": {
+      "address": 207,
+      "type": ">u1"
+    },
+    "enemy0_type": {
+      "address": 22,
+      "type": "|u1"
+    },
+    "enemy1?": {
+      "address": 16,
+      "type": ">u1"
+    },
+    "enemy1_level_x": {
+      "address": 111,
+      "type": ">u1"
+    },
+    "enemy1_screen_x": {
+      "address": 136,
+      "type": ">u1"
+    },
+    "enemy1_screen_y": {
+      "address": 208,
+      "type": ">u1"
+    },
+    "enemy1_type": {
+      "address": 23,
+      "type": "|u1"
+    },
+    "enemy2?": {
+      "address": 17,
+      "type": ">u1"
+    },
+    "enemy2_level_x": {
+      "address": 112,
+      "type": ">u1"
+    },
+    "enemy2_screen_x": {
+      "address": 137,
+      "type": ">u1"
+    },
+    "enemy2_screen_y": {
+      "address": 209,
+      "type": ">u1"
+    },
+    "enemy2_type": {
+      "address": 24,
+      "type": "|u1"
+    },
+    "enemy3?": {
+      "address": 18,
+      "type": ">u1"
+    },
+    "enemy3_level_x": {
+      "address": 113,
+      "type": ">u1"
+    },
+    "enemy3_screen_x": {
+      "address": 138,
+      "type": "|u1"
+    },
+    "enemy3_screen_y": {
+      "address": 210,
+      "type": ">u1"
+    },
+    "enemy3_type": {
+      "address": 25,
+      "type": "|u1"
+    },
+    "enemy4?": {
+      "address": 19,
+      "type": "|u1"
+    },
+    "enemy4_level_x": {
+      "address": 114,
+      "type": "|u1"
+    },
+    "enemy4_screen_x": {
+      "address": 139,
+      "type": "|u1"
+    },
+    "enemy4_screen_y": {
+      "address": 211,
+      "type": "|u1"
+    },
+    "enemy4_type": {
+      "address": 26,
+      "type": "|u1"
+    },
+    "fire2?": {
+      "address": 37,
+      "type": "|u1"
+    },
+    "fire?": {
+      "address": 36,
+      "type": "|u1"
+    },
+    "float": {
+      "address": 29,
+      "type": "|u1"
+    },
+    "levelHi": {
+      "address": 1887,
+      "type": "|i1"
+    },
+    "levelLo": {
+      "address": 1884,
+      "type": "|i1"
+    },
+    "lives": {
+      "address": 1882,
+      "type": "|i1"
+    },
+    "player_level_x": {
+      "address": 109,
+      "type": ">u1"
+    },
+    "player_pallet": {
+      "address": 964,
+      "type": "|u1"
+    },
+    "player_screen_x": {
+      "address": 134,
+      "type": ">u1"
+    },
+    "player_screen_y": {
+      "address": 206,
+      "type": ">u1"
+    },
+    "powerup?": {
+      "address": 20,
+      "type": "|u1"
+    },
+    "powerup_level_x": {
+      "address": 115,
+      "type": "|u1"
+    },
+    "powerup_screen_x": {
+      "address": 140,
+      "type": "|u1"
+    },
+    "powerup_screen_y": {
+      "address": 212,
+      "type": "|u1"
+    },
+    "powerup_state": {
+      "address": 1878,
+      "type": "|u1"
+    },
+    "powerup_type": {
+      "address": 57,
+      "type": "|u1"
+    },
+    "score": {
+      "address": 2013,
+      "type": ">n6"
+    },
+    "scrolling": {
+      "address": 1912,
+      "type": "|i1"
+    },
+    "small?": {
+      "address": 1876,
+      "type": "|u1"
+    },
+    "speed": {
+      "address": 87,
+      "type": "|u1"
+    },
+    "star_timer": {
+      "address": 1951,
+      "type": "|u1"
+    },
+    "state": {
+      "address": 14,
+      "type": "|u1"
+    },
+    "time": {
+      "address": 2040,
+      "type": ">n3"
+    },
+    "viewport": {
+      "address": 181,
+      "type": "|u1"
+    },
+    "xscrollHi": {
+      "address": 1818,
+      "type": "|u1"
+    },
+    "xscrollLo": {
+      "address": 1820,
+      "type": "|u1"
+    }
+  }
+}
