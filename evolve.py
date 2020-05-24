@@ -8,9 +8,9 @@ from SuperMarioBrosNes.game import SuperMarioBros
 
 import visualize
 
-from utilities import isFocussed
-
 debug = False
+if debug:
+    from utilities import isFocussed
 
 def simulateGame(key, net):
     game = SuperMarioBros()

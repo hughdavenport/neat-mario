@@ -11,6 +11,7 @@ import time
 
 from utilities import isFocussed
 
+# FIXME this shouldn't be using neat, was just experiment to do live play
 debug=True
 
         #   b  down  left  right  a
