@@ -8,9 +8,10 @@ from SuperMarioBrosNes.game import SuperMarioBros
 
 import visualize
 
+from utilities import saveNet, isFocussed
+
+training = False
 debug = False
-if debug:
-    from utilities import isFocussed
 
 def simulateGame(key, net):
     game = SuperMarioBros()
@@ -35,50 +36,36 @@ def simulateGame(key, net):
             if last_change > 125: # I guess around 5 seconds in game?
                 break
 
-    # At this point, if fitness is *stuck*, then train off some data instead
-    if fitness == 40:
-        # Haven't moved, train a bit more on moving right and not left
-        output = net.activate(game.state())
-        fitness += 1. - ((1. - output[SuperMarioBros.KEYS["RIGHT"]])**2 + (0. - output[SuperMarioBros.KEYS["LEFT"]])**2) / 2.
-#        if fitness > 40.999995:
-#            print(key, fitness)
-#            if fitness == 41.:
-#                print(key, output)
+    if training:
+        # At this point, if fitness is *stuck*, then train off some data instead
+        if fitness == 40:
+            # Haven't moved, train a bit more on moving right and not left
+            output = net.activate(game.state())
+            fitness += 1. - ((1. - output[SuperMarioBros.KEYS["RIGHT"]])**2 + (0. - output[SuperMarioBros.KEYS["LEFT"]])**2) / 2.
 
-    if fitness == 297:
-        # Run into first enemy, try jumping
-        error = 0.
-        jumperror = 0.
-        jumpnum = 0
-        bestjump = 0.
-        with open("training-297", "r") as f:
-            lines = f.readlines()
-            for line in lines:
-                arr = list(map(float, line.rstrip()[1:-1].split('","')))
-                state, expected = arr[:-5], arr[-5:]
-                output = net.activate(state)
-                if expected[4] == 1.:
-                    jumperror += (1. - output[4])**2
-                    jumpnum += 1
-                    bestjump = max(bestjump, output[4])
-                error += sum([(expected[i] - output[i])**2 for i in range(0, len(output))]) / len(output)
-            jumperror /= jumpnum
-#            if bestjump > 0.999995:
-#                print(key, jumperror, bestjump)
-            error /= len(lines)
-        # Use just the jump button for our error
-        fitness += (1. - jumperror)
-#        fitness += (1. - error)
-#        if fitness > 297.999995:
-#            print(key, fitness)
+        if fitness == 297:
+            # Run into first enemy, try jumping
+            error = 0.
+            with open("training-297", "r") as f:
+                lines = f.readlines()
+                for line in lines:
+                    arr = list(map(float, line.rstrip()[1:-1].split('","')))
+                    state, expected = arr[:-5], arr[-5:]
+                    output = net.activate(state)
+                    error += sum([(expected[i] - output[i])**2 for i in range(0, len(output))]) / len(output)
+                error /= len(lines)
+            fitness += (1. - error)
 
-    if fitness == 434:
-        # First pipe, need to jump over it
-        pass
+        # FIXME: do this as a tracker and save every X gens of no improvement
+        if fitness == 434:
+            # First pipe, need to jump over it
+            saveNet(net, "stuck-434.net")
+            pass
 
-    if fitness == 723:
-        # A few pipes later maybe?
-        pass
+        if fitness == 723:
+            # A few pipes later maybe?
+            saveNet(net, "stuck-723.net")
+            pass
 
     game.close()
     return fitness
