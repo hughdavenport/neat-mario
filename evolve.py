@@ -11,6 +11,8 @@ import visualize
 from utilities import saveNet, isFocussed
 
 training = False
+rounding = False
+
 debug = False
 
 def simulateGame(key, net):
@@ -24,7 +26,10 @@ def simulateGame(key, net):
             if not isFocussed():
                 continue
         # Round val, so don't need to get 1. and 0. exact
-        game.step([round(val) for val in net.activate(game.state())])
+        output = net.activate(game.state())
+        if rounding:
+            output = [round(val) for val in output]
+        game.step(output)
 
         if game.fitness() > fitness:
             fitness = game.fitness()
