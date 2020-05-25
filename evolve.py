@@ -108,8 +108,9 @@ def run(config_file, restore_file=None):
 
     p.add_reporter(neat.Checkpointer(generation_interval=10, time_interval_seconds=None))
 
-    p.add_reporter(trackers.StagnationTracker())
-    p.add_reporter(trackers.BestTracker())
+    p.add_reporter(trackers.AssistanceRequestTracker())
+    p.add_reporter(trackers.SaveBestTracker())
+    p.add_reporter(trackers.ReportBestTracker())
 
     # Run for up to 300 generations.
     winner = None
