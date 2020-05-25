@@ -10,8 +10,8 @@ import visualize
 
 from utilities import saveNet, isFocussed
 
-training = False
-rounding = False
+training = True
+rounding = True
 
 debug = False
 
