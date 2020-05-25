@@ -3,6 +3,15 @@ from neat.nn import FeedForwardNetwork, RecurrentNetwork
 
 from utilities import saveNet
 
+class BestTracker(BaseReporter):
+
+    def post_evaluate(self, config, population, species, best_genome):
+        if config.genome_config.feed_forward:
+            net = FeedForwardNetwork.create(best_genome, config)
+        else:
+            net = RecurrentNetwork.create(best_genome, config)
+        saveNet(net, "best.net")
+
 class StagnationTracker(BaseReporter):
 
     def __init__(self):
