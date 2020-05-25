@@ -93,7 +93,7 @@ def simulateGame(net=None):
 
     answer = input("Create training file {}? (y/N)".format(training_filename))
     if answer.upper() == "Y" and os.path.isfile(training_filename):
-        answer = input("It already exists, are you sure? (Y/N)")
+        answer = input("It already exists, are you sure? (y/N)")
 
     if answer.upper() == "Y":
         with open(training_filename, "w") as f:

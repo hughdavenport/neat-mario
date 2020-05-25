@@ -24,6 +24,6 @@ class StagnationTracker(BaseReporter):
             self._best_id = best_genome.key
 
         # FIXME: hard coded value
-        if self._generation_count - self._best_generation > 50:
-            print("Need training assistance, id is", self._best_id, "fitness is", self._best_fitness, "last improvment in generation", self._best_generation)
+        if self._generation_count - self._best_generation > 10:
+            print("Need training assistance, id is", self._best_id, "fitness is", self._best_fitness, "last improvment in generation", self._best_generation, "({} ago)".format(self._generation_count - self._best_generation))
             saveNet(self._best_net, "need-training-{}.net".format(self._best_fitness))
