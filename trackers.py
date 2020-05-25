@@ -10,8 +10,8 @@ class BestTracker(BaseReporter):
         self._best_fitness = None
 
     def post_evaluate(self, config, population, species, best_genome):
-        if self._best_fitness is None or best_genome.fitness() > self._best_fitness:
-            print("New best fitness: {}, Generation: {}, id: {}".format(best_genome.fitness(), self._generation_count, best_genome.key))
+        if self._best_fitness is None or best_genome.fitness > self._best_fitness:
+            print("New best fitness: {}, Generation: {}, id: {}".format(best_genome.fitness, self._generation_count, best_genome.key))
         self._generation_count += 1
 
         if config.genome_config.feed_forward:
