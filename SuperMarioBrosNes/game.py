@@ -95,6 +95,10 @@ class SuperMarioBros:
     SPRITES = {
         # 06 is Goomba
         "GOOMBA": [0x06],
+
+        # 00 is green koopa
+        # what is diff between koopas?
+        "KOOPA": [0x00],
     }
 
     THINGS = list(TILES.keys()) + list(SPRITES.keys()) + ["MUSHROOM", "FLOWER", "STAR", "1UP"]
@@ -109,10 +113,12 @@ class SuperMarioBros:
         self.info = self.env.data.lookup_all()
 
     def step(self, keys):
-#        if keys[SuperMarioBros.KEYS["RIGHT"]]> 0.99999:
-#            print("RIGHT", keys[SuperMarioBros.KEYS["RIGHT"]])
-#        if keys[SuperMarioBros.KEYS["A"]] > 0.99999:
-#            print("A", keys[SuperMarioBros.KEYS["A"]])
+#        if keys[SuperMarioBros.KEYS["RIGHT"]] == 1:
+#            print("RIGHT")
+#        if keys[SuperMarioBros.KEYS["A"]] == 1:
+#            print("JUMP")
+#        if keys[SuperMarioBros.KEYS["B"]] == 1:
+#            print("RUN")
         #           b       ?   st  se  up    down, left, right, a
         keys = [keys[0]] + [0., 0., 0., 0.] + keys[1:5]
         self.ob, _, _, self.info = self.env.step(keys)
@@ -223,7 +229,7 @@ class SuperMarioBros:
 
         if self._playerY() < 24 or self._playerY() > 232:
             # off top or bottom of screen, return nothing as not playable
-            print("TODO check that we can't play here (%d, %d)" % (self._playerX(), self._playerY()))
+#            print("TODO check that we can't play here (%d, %d)" % (self._playerX(), self._playerY()))
             return ret
 
         # Might just be self._playerX() - sx + 8
