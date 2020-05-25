@@ -67,35 +67,35 @@ listener.start()
 def simulateGame(net=None):
     game = SuperMarioBros()
 
-    ai_fitness = 0
-    training_filename = "training.csv"
-    if net is not None:
-        last_change = 0
-        while not game.isFinished():
-            output = net.activate(game.state())
-            if rounding:
-                output = [round(val) for val in output]
-            game.step(output)
-            if game.fitness() > ai_fitness:
-                ai_fitness = game.fitness()
-                last_change = 0
-            else:
-                last_change += 1
-                if last_change > 250: # Around 10seconds in game
-                    break
-                if last_change > 125: # I guess around 5 seconds in game?
-                    break
-        game.close()
-        game = SuperMarioBros()
-
-        training_filename = "training-{}.csv".format(ai_fitness)
-        print("AI Fitness: ", ai_fitness)
-
-    answer = input("Create training file {}? (y/N)".format(training_filename))
-    if answer.upper() == "Y" and os.path.isfile(training_filename):
-        answer = input("It already exists, are you sure? (y/N)")
-
+    answer = input("Create training file? (y/N)")
     if answer.upper() == "Y":
+        ai_fitness = 0
+        training_filename = "training.csv"
+        if net is not None:
+            last_change = 0
+            while not game.isFinished():
+                output = net.activate(game.state())
+                if rounding:
+                    output = [round(val) for val in output]
+                game.step(output)
+                if game.fitness() > ai_fitness:
+                    ai_fitness = game.fitness()
+                    last_change = 0
+                else:
+                    last_change += 1
+                    if last_change > 250: # Around 10seconds in game
+                        break
+                    if last_change > 125: # I guess around 5 seconds in game?
+                        break
+            game.close()
+            game = SuperMarioBros()
+
+            training_filename = "training-{}.csv".format(ai_fitness)
+            print("AI Fitness: ", ai_fitness)
+
+        if os.path.isfile(training_filename):
+            answer = input("{} already exists, are you sure? (y/N)".format(training_filename))
+
         with open(training_filename, "w") as f:
             while f.tell() == 0: # Haven't written anything to train
                 run(game, net, f)
