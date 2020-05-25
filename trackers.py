@@ -21,7 +21,7 @@ class StagnationTracker(BaseReporter):
                 self._best_net = RecurrentNetwork.create(best_genome, config)
             self._best_fitness = best_genome.fitness
             self._best_generation = self._generation_count
-            self._best_id = best_genome.Key
+            self._best_id = best_genome.key
 
         # FIXME: hard coded value
         if self._generation_count - self._best_generation > 50:
