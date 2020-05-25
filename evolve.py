@@ -45,27 +45,28 @@ def simulateGame(key, net):
 
     if training:
         # At this point, if fitness is *stuck*, then train off some data instead
-        #fitness += old_training_error(net, game)
-        fitness += training_error(net, game)
+        #fitness += old_training_error(net, fitness, game)
+        fitness += training_error(net, fitness)
 
     game.close()
     return fitness
 
 training_used = []
-def training_error(net, game):
+def training_error(net, fitness):
     global training_used
-    fitness = game.fitness()
+
     training_filename = "training-{}.csv".format(fitness)
     if not os.path.isfile(training_filename):
         if training_filename in training_used:
-            print("Noticed removal of {} so no longer training with it".format(training_filename))
+            print("Removing deleted traing file: ", training_filename)
             training_used.remove(training_filename)
         return 0.
 
     if training_filename not in training_used:
-        print("Found new training file: ", training_file)
+        print("Found new training file: ", training_filename)
         training_used.append(training_filename)
 
+    error = 0.
     with open(training_filename, "r") as f:
         lines = f.readlines()
         for line in lines:
@@ -74,10 +75,10 @@ def training_error(net, game):
             output = net.activate(state)
             error += sum([(expected[i] - output[i])**2 for i in range(0, len(output))]) / len(output)
         error /= len(lines)
+
     return 1. - error
 
-def old_training_error(net, game):
-    fitness = game.fitness()
+def old_training_error(net, fitness, game):
     if fitness == 40:
         # Haven't moved, train a bit more on moving right and not left
         output = net.activate(game.state())
