@@ -54,6 +54,9 @@ training_used = []
 def training_error(net, fitness):
     global training_used
 
+    # TODO I wonder if we should check +- 20 pixels for training as well?
+    # reasoning is that sometimes mario falls down hole, but might be several tiles apart (8 pixels each)
+    # could just go +- 2 tiles (16)
     training_filename = "training-{}.csv".format(fitness)
     if not os.path.isfile(training_filename):
         if training_filename in training_used:
@@ -108,9 +111,9 @@ def run(config_file, restore_file=None):
 
     p.add_reporter(neat.Checkpointer(generation_interval=10, time_interval_seconds=None))
 
-    p.add_reporter(trackers.AssistanceRequestTracker())
+    p.add_reporter(trackers.AssistanceRequestTracker(p.generation))
+    p.add_reporter(trackers.ReportBestTracker(p.generation))
     p.add_reporter(trackers.SaveBestTracker())
-    p.add_reporter(trackers.ReportBestTracker())
 
     # Run for up to 300 generations.
     winner = None

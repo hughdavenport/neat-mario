@@ -5,8 +5,8 @@ from utilities import saveNet
 
 class ReportBestTracker(BaseReporter):
 
-    def __init__(self):
-        self._generation_count = 0
+    def __init__(self, generation=0):
+        self._generation_count = generation
         self._best_fitness = None
 
     def post_evaluate(self, config, population, species, best_genome):
@@ -26,8 +26,8 @@ class SaveBestTracker(BaseReporter):
 
 class AssistanceRequestTracker(BaseReporter):
 
-    def __init__(self):
-        self._generation_count = 0
+    def __init__(self, generation=0):
+        self._generation_count = generation
         self._best_net = None
         self._best_fitness = None
         self._best_generation = 0
