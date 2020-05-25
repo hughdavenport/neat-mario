@@ -51,11 +51,20 @@ def simulateGame(key, net):
     game.close()
     return fitness
 
+training_used = []
 def training_error(net, game):
+    global training_used
     fitness = game.fitness()
     training_filename = "training-{}.csv".format(fitness)
     if not os.path.isfile(training_filename):
+        if training_filename in training_used:
+            print("Noticed removal of {} so no longer training with it".format(training_filename))
+            training_used.remove(training_filename)
         return 0.
+
+    if training_filename not in training_used:
+        print("Found new training file: ", training_file)
+        training_used.append(training_filename)
 
     with open(training_filename, "r") as f:
         lines = f.readlines()

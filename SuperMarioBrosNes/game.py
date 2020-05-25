@@ -102,6 +102,9 @@ class SuperMarioBros:
 
     def __init__(self):
         self.env = retro.make('SuperMarioBros-Nes', 'Level1-1')
+        self.reset()
+
+    def reset(self):
         self.ob = self.env.reset()
         self.info = self.env.data.lookup_all()
 

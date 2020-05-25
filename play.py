@@ -87,6 +87,7 @@ def simulateGame(net=None):
         game = SuperMarioBros()
 
         training_filename = "training-{}.csv".format(ai_fitness)
+        print("AI Fitness: ", ai_fitness)
 
     with open(training_filename, "w") as f:
         while f.tell() == 0: # Haven't written anything to train
@@ -118,13 +119,11 @@ def simulateGame(net=None):
             if f.tell() == 0:
                 print("Haven't got anything to train against yet")
                 ai_fitness = fitness
-                game.close()
-                game = SuperMarioBros()
+                game.reset()
             elif game.fitness() <= ai_fitness:
                 print("Haven't actually improved yet...")
                 f.seek(0, 0)
-                game.close()
-                game = SuperMarioBros()
+                game.reset()
 
     game.close()
 
