@@ -53,7 +53,7 @@ def simulateGame(key, net):
 
 def training_error(net, game):
     fitness = game.fitness()
-    training_filename = "training-{}.csv" % fitness
+    training_filename = "training-{}.csv".format(fitness)
     if not os.path.isfile(training_filename):
         return 0.
 

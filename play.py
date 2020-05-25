@@ -86,7 +86,7 @@ def simulateGame(net=None):
         game.close()
         game = SuperMarioBros()
 
-        training_filename = "training-{}.csv" % ai_fitness
+        training_filename = "training-{}.csv".format(ai_fitness)
 
     with open(training_filename, "w") as f:
         while f.tell() == 0: # Haven't written anything to train
