@@ -10,6 +10,8 @@ import visualize
 
 from utilities import saveNet, isFocussed
 
+from trackers import StagnationTracker
+
 training = True
 rounding = True
 
@@ -43,41 +45,67 @@ def simulateGame(key, net):
 
     if training:
         # At this point, if fitness is *stuck*, then train off some data instead
-        if fitness == 40:
-            # Haven't moved, train a bit more on moving right and not left
-            output = net.activate(game.state())
-            fitness += 1. - ((1. - output[SuperMarioBros.KEYS["RIGHT"]])**2 + (0. - output[SuperMarioBros.KEYS["LEFT"]])**2) / 2.
-
-        if fitness == 297:
-            # Run into first enemy, try jumping
-            error = 0.
-            with open("training-297", "r") as f:
-                lines = f.readlines()
-                for line in lines:
-                    arr = list(map(float, line.rstrip()[1:-1].split('","')))
-                    state, expected = arr[:-5], arr[-5:]
-                    output = net.activate(state)
-                    error += sum([(expected[i] - output[i])**2 for i in range(0, len(output))]) / len(output)
-                error /= len(lines)
-            fitness += (1. - error)
-
-        # FIXME: do this as a tracker and save every X gens of no improvement
-        if fitness == 434:
-            # First pipe, need to jump over it
-            saveNet(net, "stuck-434.net")
-            pass
-
-        if fitness == 723:
-            # A few pipes later maybe?
-            saveNet(net, "stuck-723.net")
-            pass
+        #fitness += old_training_error(net, game)
+        fitness += training_error(net, game)
 
     game.close()
     return fitness
 
+def training_error(net, game):
+    fitness = game.fitness()
+    training_filename = "training-{}.csv" % fitness
+    if not os.path.isfile(training_filename):
+        return 0.
+
+    with open(training_filename, "r") as f:
+        lines = f.readlines()
+        for line in lines:
+            arr = list(map(float, line.rstrip()[1:-1].split('","')))
+            state, expected = arr[:-5], arr[-5:]
+            output = net.activate(state)
+            error += sum([(expected[i] - output[i])**2 for i in range(0, len(output))]) / len(output)
+        error /= len(lines)
+    return 1. - error
+
+def old_training_error(net, game):
+    fitness = game.fitness()
+    if fitness == 40:
+        # Haven't moved, train a bit more on moving right and not left
+        output = net.activate(game.state())
+        return 1. - ((1. - output[SuperMarioBros.KEYS["RIGHT"]])**2 + (0. - output[SuperMarioBros.KEYS["LEFT"]])**2) / 2.
+
+    if fitness == 297:
+        # Run into first enemy, try jumping
+        error = 0.
+        with open("training-297", "r") as f:
+            lines = f.readlines()
+            for line in lines:
+                arr = list(map(float, line.rstrip()[1:-1].split('","')))
+                state, expected = arr[:-5], arr[-5:]
+                output = net.activate(state)
+                error += sum([(expected[i] - output[i])**2 for i in range(0, len(output))]) / len(output)
+            error /= len(lines)
+        return 1. - error
+
+    # FIXME: do this as a tracker and save every X gens of no improvement
+    if fitness == 434:
+        # First pipe, need to jump over it
+        saveNet(net, "stuck-434.net")
+        pass
+
+    if fitness == 723:
+        # A few pipes later maybe?
+        saveNet(net, "stuck-723.net")
+        pass
+
+    return 0.
+
 def eval_genome(genome, config):
     genome.fitness = 0.0
-    net = neat.nn.FeedForwardNetwork.create(genome, config)
+    if config.genome_config.feed_forward:
+        net = neat.nn.FeedForwardNetwork.create(genome, config)
+    else:
+        net = neat.nn.RecurrentNetwork.create(genome, config)
 
     genome.fitness = simulateGame(genome.key, net)
 
@@ -105,6 +133,8 @@ def run(config_file, restore_file=None):
     stats = neat.StatisticsReporter()
     p.add_reporter(stats)
     p.add_reporter(neat.Checkpointer(generation_interval=10, time_interval_seconds=None))
+
+    p.add_reporter(StagnationTracker())
 
     # Run for up to 300 generations.
     winner = None
