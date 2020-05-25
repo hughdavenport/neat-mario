@@ -69,12 +69,13 @@ def training_error(net, fitness):
     error = 0.
     with open(training_filename, "r") as f:
         lines = f.readlines()
-        for line in lines:
-            arr = list(map(float, line.rstrip()[1:-1].split('","')))
-            state, expected = arr[:-5], arr[-5:]
-            output = net.activate(state)
-            error += sum([(expected[i] - output[i])**2 for i in range(0, len(output))]) / len(output)
-        error /= len(lines)
+        if lines:
+            for line in lines:
+                arr = list(map(float, line.rstrip()[1:-1].split('","')))
+                state, expected = arr[:-5], arr[-5:]
+                output = net.activate(state)
+                error += sum([(expected[i] - output[i])**2 for i in range(0, len(output))]) / len(output)
+            error /= len(lines)
 
     return 1. - error
 
