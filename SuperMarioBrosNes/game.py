@@ -93,6 +93,11 @@ class SuperMarioBros:
     }
 
     SPRITES = {
+        # 13 is "nothing"
+        # 16 is fireworks
+        # 31 is star flag on top of castle at end
+        "NOTHING": [0x13, 0x16, 0x31],
+
         # 06 is Goomba
         "GOOMBA": [0x06],
 
@@ -101,7 +106,7 @@ class SuperMarioBros:
         "KOOPA": [0x00],
     }
 
-    THINGS = list(TILES.keys()) + list(SPRITES.keys()) + ["MUSHROOM", "FLOWER", "STAR", "1UP"]
+    THINGS = list(set(list(TILES.keys()) + list(SPRITES.keys()) + ["MUSHROOM", "FLOWER", "STAR", "1UP"]))
 
 
     def __init__(self):
@@ -155,17 +160,20 @@ class SuperMarioBros:
         sx = self.info['xscrollHi'] * 256 + self.info['xscrollLo'] + 8
 
         # In reality, we can't quite see the next tile off screen (though can sometimes see half)
-        for x in range(sx, sx + 240, 16):
+        for tx in range(sx, sx + 240, 16):
             # In reality, the top 2 and bottom 1 tile is not playable
-            for y in range(32, 240, 16):
-                tile = self._getTileData(x, y)
+            for ty in range(32, 240, 16):
+                x = int((tx - sx)/16)
+                y = int((ty - 32)/16)
+
+                tile = self._getTileData(tx, ty)
                 value = None
                 for thing in SuperMarioBros.TILES.keys():
                     if tile in SuperMarioBros.TILES[thing]:
                         value = SuperMarioBros.THINGS.index(thing) / (len(SuperMarioBros.THINGS) - 1)
                 if value is None:
-                    print("unknown tile at (%d, %d) = %x" % (x, y, tile))
-                ret[int((x-sx)/16)][int((y-32)/16)] = value
+                    print("unknown tile at (%d, %d) = %x" % (tx, ty, tile))
+                ret[x][y] = value
 
         return ret
 
@@ -180,6 +188,9 @@ class SuperMarioBros:
                 ex = self.info['enemy%d_level_x' % slot] * 256 + self.info['enemy%d_screen_x' % slot] + 8
                 ey = self.info['enemy%d_screen_y' % slot] + 8
                 if ex >= sx and ex < sx + 240 and ey >= 32 and ey < 256 - 16:
+                    x = int((ex - sx)/16)
+                    y = int((ey - 32)/16)
+
                     sprite = self.info['enemy%d_type' % slot]
                     value = None
                     for thing in SuperMarioBros.SPRITES.keys():
@@ -187,12 +198,15 @@ class SuperMarioBros:
                             value = SuperMarioBros.THINGS.index(thing) / (len(SuperMarioBros.THINGS) - 1)
                     if value is None:
                         print("unknown sprite at (%d, %d) = %x" % (ex, ey, sprite))
-                    ret[int((ex - sx)/16)][int((ey - 32)/16)] = value
+                    ret[x][y] = value
 
         if self.info['powerup?'] == 1:
             ex = self.info['powerup_level_x'] * 256 + self.info['powerup_screen_x']
             ey = self.info['powerup_screen_y'] + 8
             if ex >= sx and ex < sx + 240 and ey >= 32 and ey < 256 - 16:
+                x = int((ex - sx)/16)
+                y = int((ey - 32)/16)
+
                 powerup = self.info['powerup_type']
                 value = None
                 if powerup == 0:
@@ -206,7 +220,17 @@ class SuperMarioBros:
                 else:
                     print("unknown powerup at (%d, %d) = %x" % (ex, ey, powerup))
 
-                ret[int((ex - sx)/16)][int((ey - 32)/16)] = value
+                if ret[x][y] is not None:
+                    print("overwriting a sprite with a powerup at (%d, %d) from %x to %x" % (ex, ey, ret[x][y], value))
+
+                # The flagpole weirdly shows as mushroom, and is sometimes offset
+                flagpole = False
+                for offset in range(8, 24):
+                    add = int((ex - sx + offset)/16) * 16
+                    if self._getTileData(sx + add, ey - 8) in SuperMarioBros.TILES["FLAGPOLE"]:
+                        flagpole = True
+                if not flagpole:
+                    ret[x][y] = value
 
 
         # TODO fireball, hammer

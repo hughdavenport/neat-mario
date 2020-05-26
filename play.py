@@ -115,8 +115,7 @@ def simulateGame(net=None):
     return game.fitness()
 
 def run(game, net, training_file=None):
-    fitness = 0
-    last_change = 0
+    pause_time = 0.0175
 
     while not game.isFinished():
         game.render()
@@ -125,22 +124,13 @@ def run(game, net, training_file=None):
             if rounding:
                 output = [round(val) for val in output]
             game.step(output)
-
-            if game.fitness() > fitness:
-                fitness = game.fitness()
-                last_change = 0
-            else:
-                last_change += 1
-                if last_change > 250: # Around 10seconds in game
-                    break
-                if last_change > 125: # I guess around 5 seconds in game?
-                    break
+            time.sleep(pause_time / 4)
         else:
             if isFocussed():
                 if training_file is not None:
                     training_file.write('"' + '","'.join(map(str, list(game.state()) + pressed)) + '"\n')
                 game.step(pressed)
-                time.sleep(0.0175)
+                time.sleep(pause_time)
 
 if __name__ == '__main__':
     # TODO parse sysargs properly
