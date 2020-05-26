@@ -20,6 +20,9 @@ class ReportBestTracker(BaseReporter):
             saveNet(net, "best.net")
         self._generation_count += 1
 
+class SaveBestTracker(BaseReporter):
+    pass
+
 class AssistanceRequestTracker(BaseReporter):
 
     def __init__(self, generation=0):
