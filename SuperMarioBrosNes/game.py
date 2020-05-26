@@ -106,7 +106,7 @@ class SuperMarioBros:
         "KOOPA": [0x00],
     }
 
-    THINGS = list(set(list(TILES.keys()) + list(SPRITES.keys()) + ["MUSHROOM", "FLOWER", "STAR", "1UP"]))
+    THINGS = list(dict.fromkeys(list(TILES.keys()) + list(SPRITES.keys()) + ["MUSHROOM", "FLOWER", "STAR", "1UP"]))
 
 
     def __init__(self):
