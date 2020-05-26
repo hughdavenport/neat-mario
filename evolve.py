@@ -54,32 +54,33 @@ training_used = []
 def training_error(net, fitness):
     global training_used
 
-    # TODO I wonder if we should check +- 20 pixels for training as well?
-    # reasoning is that sometimes mario falls down hole, but might be several tiles apart (8 pixels each)
-    # could just go +- 2 tiles (16)
-    training_filename = "training-{}.csv".format(fitness)
-    if not os.path.isfile(training_filename):
-        if training_filename in training_used:
-            print("Removing deleted traing file: ", training_filename)
-            training_used.remove(training_filename)
-        return 0.
+    # Try pixels on the two tiles either side
+    for fitness in range(fitness - 16, fitness + 16 + 1):
+        training_filename = "training-{}.csv".format(fitness)
+        if not os.path.isfile(training_filename):
+            if training_filename in training_used:
+                print("Removing deleted traing file: ", training_filename)
+                training_used.remove(training_filename)
+            continue
 
-    if training_filename not in training_used:
-        print("Found new training file: ", training_filename)
-        training_used.append(training_filename)
+        if training_filename not in training_used:
+            print("Found new training file: ", training_filename)
+            training_used.append(training_filename)
 
-    error = 0.
-    with open(training_filename, "r") as f:
-        lines = f.readlines()
-        if lines:
-            for line in lines:
-                arr = list(map(float, line.rstrip()[1:-1].split('","')))
-                state, expected = arr[:-5], arr[-5:]
-                output = net.activate(state)
-                error += sum([(expected[i] - output[i])**2 for i in range(0, len(output))]) / len(output)
-            error /= len(lines)
+        error = 0.
+        with open(training_filename, "r") as f:
+            lines = f.readlines()
+            if lines:
+                for line in lines:
+                    arr = list(map(float, line.rstrip()[1:-1].split('","')))
+                    state, expected = arr[:-5], arr[-5:]
+                    output = net.activate(state)
+                    error += sum([(expected[i] - output[i])**2 for i in range(0, len(output))]) / len(output)
+                error /= len(lines)
 
-    return 1. - error
+        return 1. - error
+
+    return 0.
 
 def eval_genome(genome, config):
     genome.fitness = 0.0
