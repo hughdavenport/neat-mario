@@ -220,9 +220,6 @@ class SuperMarioBros:
                 else:
                     print("unknown powerup at (%d, %d) = %x" % (ex, ey, powerup))
 
-                if ret[x][y] is not None:
-                    print("overwriting a sprite with a powerup at (%d, %d) from %x to %x" % (ex, ey, ret[x][y], value))
-
                 # The flagpole weirdly shows as mushroom, and is sometimes offset
                 flagpole = False
                 for offset in range(8, 24):
@@ -230,6 +227,8 @@ class SuperMarioBros:
                     if self._getTileData(sx + add, ey - 8) in SuperMarioBros.TILES["FLAGPOLE"]:
                         flagpole = True
                 if not flagpole:
+                    if ret[x][y] is not None:
+                        print("overwriting a sprite with a powerup at (%d, %d) from %f (%s) to %f (%s)" % (ex, ey, ret[x][y], SuperMarioBros.THINGS[int(ret[x][y] * (len(SuperMarioBros.THINGS) - 1))], value, SuperMarioBros.THINGS[int(value * (len(SuperMarioBros.THINGS) - 1))]))
                     ret[x][y] = value
 
 
