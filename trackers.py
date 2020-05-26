@@ -13,16 +13,12 @@ class ReportBestTracker(BaseReporter):
         if self._best_fitness is None or best_genome.fitness > self._best_fitness:
             print("New best fitness: {}, Generation: {}, id: {}".format(best_genome.fitness, self._generation_count, best_genome.key))
             self._best_fitness = best_genome.fitness
+            if config.genome_config.feed_forward:
+                net = FeedForwardNetwork.create(best_genome, config)
+            else:
+                net = RecurrentNetwork.create(best_genome, config)
+            saveNet(net, "best.net")
         self._generation_count += 1
-
-class SaveBestTracker(BaseReporter):
-
-    def post_evaluate(self, config, population, species, best_genome):
-        if config.genome_config.feed_forward:
-            net = FeedForwardNetwork.create(best_genome, config)
-        else:
-            net = RecurrentNetwork.create(best_genome, config)
-        saveNet(net, "best.net")
 
 class AssistanceRequestTracker(BaseReporter):
 

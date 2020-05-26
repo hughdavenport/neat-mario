@@ -113,7 +113,6 @@ def run(config_file, restore_file=None):
 
     p.add_reporter(trackers.AssistanceRequestTracker(p.generation))
     p.add_reporter(trackers.ReportBestTracker(p.generation))
-    p.add_reporter(trackers.SaveBestTracker())
 
     # Run for up to 300 generations.
     winner = None
