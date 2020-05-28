@@ -2,6 +2,7 @@ from neat.reporting import BaseReporter
 from neat.nn import FeedForwardNetwork, RecurrentNetwork
 
 from utilities import saveNet
+import os
 
 class ReportBestTracker(BaseReporter):
 
@@ -12,9 +13,11 @@ class ReportBestTracker(BaseReporter):
 
     def post_evaluate(self, config, population, species, best_genome):
         if self._best_id is not None and self._best_id not in population:
-            print("Lost best fitness in generation {}, restarting".format(self._generation_count))
+            print("Lost best fitness in generation {}, restarting, saving old net as best-{}.net".format(self._generation_count, self._best_fitness))
+            os.rename('best.net', 'best-{}.net'.format(self._best_fitness))
             self._best_id = None
             self._best_fitness = None
+
         if self._best_fitness is None or best_genome.fitness > self._best_fitness:
             print("New best fitness: {}, Size = {}, Generation: {}, id: {}".format(best_genome.fitness, best_genome.size(), self._generation_count, best_genome.key))
             self._best_fitness = best_genome.fitness
