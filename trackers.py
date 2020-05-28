@@ -8,11 +8,17 @@ class ReportBestTracker(BaseReporter):
     def __init__(self, generation=0):
         self._generation_count = generation
         self._best_fitness = None
+        self._best_id = None
 
     def post_evaluate(self, config, population, species, best_genome):
+        if self._best_id is not None and self._best_id not in population:
+            print("Lost best fitness in generation {}, restarting".format(self._generation_count)
+            self._best_id = None
+            self._best_fitness = None
         if self._best_fitness is None or best_genome.fitness > self._best_fitness:
             print("New best fitness: {}, Size = {}, Generation: {}, id: {}".format(best_genome.fitness, best_genome.size(), self._generation_count, best_genome.key))
             self._best_fitness = best_genome.fitness
+            self._best_id = best_genome.key
             if config.genome_config.feed_forward:
                 net = FeedForwardNetwork.create(best_genome, config)
             else:
