@@ -39,6 +39,10 @@ class AssistanceRequestTracker(BaseReporter):
         self._best_id = None
 
     def post_evaluate(self, config, population, species, best_genome):
+        if self._best_id is not None and self._best_id not in population:
+            self._best_id = None
+            self._best_fitness = None
+
         self._generation_count += 1
         if self._best_net is None or best_genome.fitness > self._best_fitness:
             if config.genome_config.feed_forward:
