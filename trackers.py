@@ -40,6 +40,7 @@ class AssistanceRequestTracker(BaseReporter):
 
     def post_evaluate(self, config, population, species, best_genome):
         if self._best_id is not None and self._best_id not in population:
+            self._best_net = None
             self._best_id = None
             self._best_fitness = None
 
