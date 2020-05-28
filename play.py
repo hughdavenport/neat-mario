@@ -126,7 +126,7 @@ def run(game, net, training_file=None):
             if rounding:
                 output = [round(val) for val in output]
             game.step(output)
-#            time.sleep(pause_time / 4)
+            time.sleep(pause_time / 4)
 
             if game.fitness() > fitness:
                 fitness = game.fitness()

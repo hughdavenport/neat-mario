@@ -151,7 +151,7 @@ class SuperMarioBros:
         return np.concatenate((self.playerData(), self.playerView(4)))
 
     def fitness(self):
-        return self._playerX()
+        return self.info['levelHi'] * 4 + self.info['levelLo'] + self._playerX()
 
     def tiles(self):
         """Returns tiles as a 15x13 array"""
@@ -242,6 +242,14 @@ class SuperMarioBros:
         # Could have big/small, in starmode? ducking? speed? floating state?
 
         ret = np.zeros(shape=0)
+        # TODO these info (and others in this file) are based off a custom json file. We could do the hex values direct here
+        # Are we small (0) or big (1), or fiery (2)?
+        ret = np.append(ret, self.info['powerup_state'] / 3)
+        # Are we normal (0), jumping (1)  or falling (2) or coming down flagpole (3)
+        ret = np.append(ret, self.info['float'] / 4)
+        # Speed left (-) or right (+) up to 127
+        ret = np.append(ret, (self.info['speed'] + 127) / 256)
+
 
         return ret
 
