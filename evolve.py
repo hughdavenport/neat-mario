@@ -75,7 +75,7 @@ def training_error(net, fitness):
                     arr = None
                     try:
                         arr = list(map(float, line.rstrip()[1:-1].split('","')))
-                    except ValueError e:
+                    except ValueError as e:
                         print("Failed parsing line")
                         print(line)
                         raise e
