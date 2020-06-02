@@ -72,7 +72,13 @@ def training_error(net, fitness):
             lines = f.readlines()
             if lines:
                 for line in lines:
-                    arr = list(map(float, line.rstrip()[1:-1].split('","')))
+                    arr = None
+                    try:
+                        arr = list(map(float, line.rstrip()[1:-1].split('","')))
+                    except ValueError e:
+                        print("Failed parsing line")
+                        print(line)
+                        raise e
                     state, expected = arr[:-5], arr[-5:]
                     output = net.activate(state)
                     error += sum([(expected[i] - output[i])**2 for i in range(0, len(output))]) / len(output)
