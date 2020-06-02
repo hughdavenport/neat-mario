@@ -80,7 +80,13 @@ def training_error(net, fitness):
                         print(line)
                         raise e
                     state, expected = arr[:-5], arr[-5:]
-                    output = net.activate(state)
+                    output = None
+                    try:
+                        output = net.activate(state)
+                    except RuntimeError as e:
+                        print("Not enough inputs in line")
+                        print(line)
+                        raise(e)
                     error += sum([(expected[i] - output[i])**2 for i in range(0, len(output))]) / len(output)
                 error /= len(lines)
 
