@@ -148,7 +148,7 @@ class SuperMarioBros:
         return self.ob
 
     def state(self):
-        return np.concatenate((self.playerData(), self.playerView(4)))
+        return np.concatenate((self.playerData(), self.playerView(5)))
 
     def fitness(self):
         return self.info['levelHi'] * 4 + self.info['levelLo'] + self._playerX()
