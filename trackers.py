@@ -13,7 +13,7 @@ class ReportBestTracker(BaseReporter):
 
     def post_evaluate(self, config, population, species, best_genome):
         if self._best_id is not None and self._best_id not in population:
-            print("Lost best fitness in generation {}, restarting, saving old net as best-{}.net".format(self._generation_count, self._best_fitness))
+            print("Lost best fitness in generation {}, restarting, saving old net as best-{}-{}.net".format(self._generation_count, self._best_fitness, self._best_id))
             os.rename('best.net', 'best-{}.net'.format(self._best_fitness))
             self._best_id = None
             self._best_fitness = None
