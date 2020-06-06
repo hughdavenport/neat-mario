@@ -96,16 +96,23 @@ def simulateGame(net=None):
         if os.path.isfile(training_filename):
             answer = input("{} already exists, are you sure? (y/N)".format(training_filename))
 
-        with open(training_filename, "w") as f:
-            while f.tell() == 0: # Haven't written anything to train
+    if answer.upper() == "Y":
+        mode = "w"
+        if os.path.isfile(training_filename):
+            answer = input("Overwrite or Append? (O/a)".format(training_filename))
+            if answer.upper() == "A":
+                mode = "a"
+        with open(training_filename, mode) as f:
+            start = f.tell()
+            while f.tell() == start: # Haven't written anything to train
                 run(game, net, f)
 
-                if f.tell() == 0:
+                if f.tell() == start:
                     print("Haven't got anything to train against yet")
                     game.reset()
                 elif game.fitness() <= ai_fitness:
                     print("Haven't actually improved yet...")
-                    f.seek(0, 0)
+                    f.seek(start, 0)
                     game.reset()
     else:
         run(game, net)

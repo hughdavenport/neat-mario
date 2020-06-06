@@ -54,6 +54,14 @@ training_used = []
 def training_error(net, fitness):
     global training_used
 
+    generic_training_filename = "training.csv"
+
+    if os.path.isfile(generic_training_filename):
+        if generic_training_filename not in training_used:
+            print("Using global training file {}".format(generic_training_filename))
+            training_used.append(generic_training_filename)
+        return _training_error(net, generic_training_filename)
+
     # Try pixels on the two tiles either side
     for fitness in range(fitness - 16, fitness + 16 + 1):
         training_filename = "training-{}.csv".format(fitness)
@@ -67,32 +75,36 @@ def training_error(net, fitness):
             print("Found new training file: ", training_filename)
             training_used.append(training_filename)
 
-        error = 0.
-        with open(training_filename, "r") as f:
-            lines = f.readlines()
-            if lines:
-                for line in lines:
-                    arr = None
-                    try:
-                        arr = list(map(float, line.rstrip()[1:-1].split('","')))
-                    except ValueError as e:
-                        print("Failed parsing line")
-                        print(line)
-                        raise e
-                    state, expected = arr[:-5], arr[-5:]
-                    output = None
-                    try:
-                        output = net.activate(state)
-                    except RuntimeError as e:
-                        print("Not enough inputs in line")
-                        print(line)
-                        raise(e)
-                    error += sum([(expected[i] - output[i])**2 for i in range(0, len(output))]) / len(output)
-                error /= len(lines)
-
-        return 1. - error
+        return _training_error(net, training_filename)
 
     return 0.
+
+def _training_error(net, training_filename):
+    error = 0.
+    with open(training_filename, "r") as f:
+        lines = f.readlines()
+        if lines:
+            for line in lines:
+                arr = None
+                try:
+                    arr = list(map(float, line.rstrip()[1:-1].split('","')))
+                except ValueError as e:
+                    print("Failed parsing line")
+                    print(line)
+                    raise e
+                state, expected = arr[:-5], arr[-5:]
+                output = None
+                try:
+                    output = net.activate(state)
+                except RuntimeError as e:
+                    print("Not enough inputs in line")
+                    print(line)
+                    raise(e)
+                error += sum([(expected[i] - output[i])**2 for i in range(0, len(output))]) / len(output)
+            error /= len(lines)
+
+    return 1. - error
+
 
 def eval_genome(genome, config):
     genome.fitness = 0.0
