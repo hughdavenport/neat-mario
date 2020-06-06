@@ -23,6 +23,8 @@ rounding = True
 
         #   b  down  left  right  a
 pressed = [0.,  0.,   0.,   0.,   0.]
+training_toggle = False
+restart_game = False
 
 
 def on_press(key):
@@ -44,6 +46,8 @@ def on_press(key):
 
 def on_release(key):
     global pressed
+    global training_toggle
+    global restart_game
 
     if not isFocussed():
         return
@@ -59,12 +63,21 @@ def on_release(key):
     if key == keyboard.Key.right:
         pressed[SuperMarioBros.KEYS["RIGHT"]] = 0.
 
+    if key == keyboard.Key.space:
+        training_toggle = not training_toggle
+        print("Training?", training_toggle)
+
+    if key == keyboard.Key.esc:
+        restart_game = True
+
 listener = keyboard.Listener(
         on_press=on_press,
         on_release=on_release)
 listener.start()
 
 def simulateGame(net=None):
+    global training_toggle
+
     game = SuperMarioBros()
 
     answer = input("Create training file? (y/N)")
@@ -91,6 +104,7 @@ def simulateGame(net=None):
             game = SuperMarioBros()
 
             training_filename = "training-{}.csv".format(ai_fitness)
+            training_toggle = True
             print("AI Fitness: ", ai_fitness)
 
         if os.path.isfile(training_filename):
@@ -122,11 +136,16 @@ def simulateGame(net=None):
     return game.fitness()
 
 def run(game, net, training_file=None):
+    global restart_game
+
     pause_time = 0.0175
     fitness = 0
     last_change = 0
 
     while not game.isFinished():
+        if restart_game:
+            restart_game = False
+            game.reset()
         game.render()
         if pressed.count(0.) == len(pressed) and net is not None:
             output = net.activate(game.state())
@@ -146,7 +165,7 @@ def run(game, net, training_file=None):
                     break
         else:
             if isFocussed():
-                if training_file is not None:
+                if training_file is not None and training_toggle:
                     training_file.write('"' + '","'.join(map(str, list(game.state()) + pressed)) + '"\n')
                 game.step(pressed)
                 time.sleep(pause_time)
