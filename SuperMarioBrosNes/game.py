@@ -114,10 +114,11 @@ class SuperMarioBros:
         self.reset()
 
     def reset(self):
+        self._fitness_offset = 0
         self.ob = self.env.reset()
         self.info = self.env.data.lookup_all()
 
-    def step(self, keys):
+    def step(self, keys=[0, 0, 0, 0, 0]):
 #        if keys[SuperMarioBros.KEYS["RIGHT"]] == 1:
 #            print("RIGHT")
 #        if keys[SuperMarioBros.KEYS["A"]] == 1:
@@ -150,8 +151,22 @@ class SuperMarioBros:
     def state(self):
         return np.concatenate((self.playerData(), self.playerView(5)))
 
+    def isControllable(self):
+        if self.info['state'] == 0x01:
+            # vine
+            # TODO, how does fitness change during this zone
+            pass
+        elif self.info['state'] == 0x02:
+            # side pipe, coming back to surface
+            self._fitness_offset = 0
+        elif self.info['state'] == 0x03:
+            # downpipe, going underground
+            self._fitness_offset = self._playerX()
+
+        return self.info['state'] == 0x08
+
     def fitness(self):
-        return self.info['levelHi'] * 4 + self.info['levelLo'] + self._playerX()
+        return self.info['levelHi'] * 4 + self.info['levelLo'] + self._playerX() + self._fitness_offset
 
     def tiles(self):
         """Returns tiles as a 15x13 array"""

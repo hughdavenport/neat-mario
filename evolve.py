@@ -27,6 +27,11 @@ def simulateGame(key, net):
             game.render()
             if not isFocussed():
                 continue
+
+        if not game.isControllable():
+            game.step()
+            continue
+
         # Round val, so don't need to get 1. and 0. exact
         output = net.activate(game.state())
         if rounding:

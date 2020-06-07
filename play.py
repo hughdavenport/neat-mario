@@ -147,6 +147,10 @@ def run(game, net, training_file=None):
             restart_game = False
             game.reset()
         game.render()
+        if not game.isControllable():
+            game.step()
+            continue
+
         if pressed.count(0.) == len(pressed) and net is not None:
             output = net.activate(game.state())
             if rounding:
@@ -154,21 +158,24 @@ def run(game, net, training_file=None):
             game.step(output)
             time.sleep(pause_time / 4)
 
-            if game.fitness() > fitness:
-                fitness = game.fitness()
-                last_change = 0
-            else:
-                last_change += 1
-                if last_change > 250: # Around 10seconds in game
-                    break
-                if last_change > 125: # I guess around 5 seconds in game?
-                    break
         else:
             if isFocussed():
+                print(game.fitness())
+                print(game.info['state'])
                 if training_file is not None and training_toggle:
                     training_file.write('"' + '","'.join(map(str, list(game.state()) + pressed)) + '"\n')
                 game.step(pressed)
                 time.sleep(pause_time)
+
+        if game.fitness() > fitness:
+            fitness = game.fitness()
+            last_change = 0
+        else:
+            last_change += 1
+            if last_change > 250: # Around 10seconds in game
+                break
+            if last_change > 125: # I guess around 5 seconds in game?
+                break
 
 if __name__ == '__main__':
     # TODO parse sysargs properly
