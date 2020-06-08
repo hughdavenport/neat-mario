@@ -160,8 +160,6 @@ def run(game, net, training_file=None):
 
         else:
             if isFocussed():
-                print(game.fitness())
-                print(game.info['state'])
                 if training_file is not None and training_toggle:
                     training_file.write('"' + '","'.join(map(str, list(game.state()) + pressed)) + '"\n')
                 game.step(pressed)
