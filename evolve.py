@@ -89,24 +89,32 @@ def _training_error(net, training_filename):
     with open(training_filename, "r") as f:
         lines = f.readlines()
         if lines:
+            lineno = 0
+            failures = 0
             for line in lines:
                 arr = None
                 try:
                     arr = list(map(float, line.rstrip()[1:-1].split('","')))
                 except ValueError as e:
                     print("Failed parsing line")
-                    print(line)
-                    raise e
+                    print(lineno, line)
+                    failures += 1
+                    continue
                 state, expected = arr[:-5], arr[-5:]
                 output = None
                 try:
                     output = net.activate(state)
                 except RuntimeError as e:
                     print("Not enough inputs in line")
-                    print(line)
-                    raise(e)
+                    print(lineno, line)
+                    continue
                 error += sum([(expected[i] - output[i])**2 for i in range(0, len(output))]) / len(output)
-            error /= len(lines)
+                lineno += 1
+
+            if failures == lineno:
+                return 0.
+
+            error /= (lineno - failures)
 
     return 1. - error
 
