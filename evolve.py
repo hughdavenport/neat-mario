@@ -109,7 +109,7 @@ def _training_error(net, training_filename):
                     arr = list(map(float, line.rstrip()[1:-1].split('","')))
                 except ValueError as e:
                     print("Failed parsing line")
-                    print(lineno, line)
+                    print(lines.index(line) + 1, line)
                     failures += 1
                     continue
                 state, expected = arr[:-5], arr[-5:]
@@ -119,7 +119,7 @@ def _training_error(net, training_filename):
                     output = net.activate(state)
                 except RuntimeError as e:
                     print("Not enough inputs in line")
-                    print(lineno, line)
+                    print(lines.index(line) + 1, line)
                     continue
                 error += sum([0. if expected[i] == "ignore" else (expected[i] - output[i])**2 for i in range(0, len(output))]) / (len(output) - expected.count("ignore"))
                 count += 1
