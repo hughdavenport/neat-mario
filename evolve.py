@@ -95,7 +95,7 @@ def _training_error(net, training_filename):
             count = 0
             failures = 0
             for line in lines:
-                if line == "===":
+                if line.rstrip() == "===":
                     if failures != count:
                         error /= (count - failures)
                         best = min(best, error)
