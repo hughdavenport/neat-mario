@@ -113,7 +113,7 @@ def _training_error(net, training_filename):
                     failures += 1
                     continue
                 state, expected = arr[:-5], arr[-5:]
-                state = [math.random() if val == "ignore" else val for val in state]
+                state = [math.random() if val == 999. else val for val in state]
                 output = None
                 try:
                     output = net.activate(state)
@@ -121,7 +121,7 @@ def _training_error(net, training_filename):
                     print("Not enough inputs in line")
                     print(lines.index(line) + 1, line)
                     continue
-                error += sum([0. if expected[i] == "ignore" else (expected[i] - output[i])**2 for i in range(0, len(output))]) / (len(output) - expected.count("ignore"))
+                error += sum([0. if expected[i] == 999. else (expected[i] - output[i])**2 for i in range(0, len(output))]) / (len(output) - expected.count(999.))
                 count += 1
 
             if failures == count:
