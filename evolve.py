@@ -12,7 +12,7 @@ from utilities import isFocussed
 
 import trackers
 
-import math
+import random
 
 training = True
 rounding = True
@@ -113,7 +113,7 @@ def _training_error(net, training_filename):
                     failures += 1
                     continue
                 state, expected = arr[:-5], arr[-5:]
-                state = [math.random() if val == 999. else val for val in state]
+                state = [random.random() if val == 999. else val for val in state]
                 output = None
                 try:
                     output = net.activate(state)
