@@ -117,6 +117,7 @@ def simulateGame(net=None):
             if answer.upper() == "A":
                 mode = "a"
         with open(training_filename, mode) as f:
+            f.write("===\n")
             start = f.tell()
             while f.tell() == start: # Haven't written anything to train
                 run(game, net, f)

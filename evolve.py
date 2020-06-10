@@ -12,6 +12,8 @@ from utilities import isFocussed
 
 import trackers
 
+import math
+
 training = True
 rounding = True
 
@@ -85,13 +87,23 @@ def training_error(net, fitness):
     return 0.
 
 def _training_error(net, training_filename):
+    best = 1.
     error = 0.
     with open(training_filename, "r") as f:
         lines = f.readlines()
         if lines:
-            lineno = 0
+            count = 0
             failures = 0
             for line in lines:
+                if line == "===":
+                    if failures != count:
+                        error /= (count - failures)
+                        best = min(best, error)
+                    error = 0.
+                    count = 0
+                    failures = 0
+                    continue
+
                 arr = None
                 try:
                     arr = list(map(float, line.rstrip()[1:-1].split('","')))
@@ -101,6 +113,7 @@ def _training_error(net, training_filename):
                     failures += 1
                     continue
                 state, expected = arr[:-5], arr[-5:]
+                state = [math.random() if val == "ignore" else val for val in state]
                 output = None
                 try:
                     output = net.activate(state)
@@ -108,15 +121,16 @@ def _training_error(net, training_filename):
                     print("Not enough inputs in line")
                     print(lineno, line)
                     continue
-                error += sum([(expected[i] - output[i])**2 for i in range(0, len(output))]) / len(output)
-                lineno += 1
+                error += sum([0. if expected[i] == "ignore" else (expected[i] - output[i])**2 for i in range(0, len(output))]) / (len(output) - expected.count("ignore"))
+                count += 1
 
-            if failures == lineno:
-                return 0.
+            if failures == count:
+                return 1. - best
 
-            error /= (lineno - failures)
+            error /= (count - failures)
+            best = min(best, error)
 
-    return 1. - error
+    return 1. - best
 
 
 def eval_genome(genome, config):
