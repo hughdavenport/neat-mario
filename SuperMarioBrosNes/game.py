@@ -166,7 +166,8 @@ class SuperMarioBros:
         return self.info['state'] == 0x08
 
     def fitness(self):
-        return self.info['levelHi'] * 4 + self.info['levelLo'] + self._playerX() + self._fitness_offset
+        # most maps are around 3000 pixels long, 8-1 is 6000.
+        return 10000*(self.info['levelHi'] * 4 + self.info['levelLo']) + self._playerX() + self._fitness_offset
 
     def tiles(self):
         """Returns tiles as a 15x13 array"""
