@@ -149,7 +149,7 @@ class SuperMarioBros:
         return self.ob
 
     def state(self):
-        return np.concatenate((self.playerData(), self.playerView(5)))
+        return np.concatenate((self.playerData(), self.playerView(6)))
 
     def isControllable(self):
         if self.info['state'] == 0x01:
